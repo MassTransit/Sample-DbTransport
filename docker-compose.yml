@@ -1,0 +1,21 @@
+﻿version: "3.9"
+services:
+  postgres:
+    image: "postgres:14.7"
+    networks:
+      - sample-network
+    environment:
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=Password12!"
+      - "POSTGRES_DB=sample"
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+networks:
+  sample-network:
+    driver: bridge
