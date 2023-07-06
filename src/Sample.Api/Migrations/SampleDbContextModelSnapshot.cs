@@ -149,6 +149,11 @@ namespace Sample.Api.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("message_id");
 
+                    b.Property<string>("MessageType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("message_type");
+
                     b.Property<Guid?>("OutboxId")
                         .HasColumnType("uuid")
                         .HasColumnName("outbox_id");
@@ -380,6 +385,65 @@ namespace Sample.Api.Migrations
                     b.HasKey("CorrelationId");
 
                     b.ToTable("job_type_saga", "sample");
+                });
+
+            modelBuilder.Entity("Sample.Components.StateMachines.RegistrationState", b =>
+                {
+                    b.Property<Guid>("CorrelationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("correlation_id");
+
+                    b.Property<string>("CardNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("card_number");
+
+                    b.Property<string>("CurrentState")
+                        .HasColumnType("text")
+                        .HasColumnName("current_state");
+
+                    b.Property<string>("EventId")
+                        .HasColumnType("text")
+                        .HasColumnName("event_id");
+
+                    b.Property<string>("ParticipantCategory")
+                        .HasColumnType("text")
+                        .HasColumnName("participant_category");
+
+                    b.Property<string>("ParticipantEmailAddress")
+                        .HasColumnType("text")
+                        .HasColumnName("participant_email_address");
+
+                    b.Property<DateTime?>("ParticipantLicenseExpirationDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("participant_license_expiration_date");
+
+                    b.Property<string>("ParticipantLicenseNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("participant_license_number");
+
+                    b.Property<string>("RaceId")
+                        .HasColumnType("text")
+                        .HasColumnName("race_id");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("text")
+                        .HasColumnName("reason");
+
+                    b.Property<Guid?>("RegistrationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("registration_id");
+
+                    b.Property<int?>("RetryAttempt")
+                        .HasColumnType("integer")
+                        .HasColumnName("retry_attempt");
+
+                    b.Property<Guid?>("ScheduleRetryToken")
+                        .HasColumnType("uuid")
+                        .HasColumnName("schedule_retry_token");
+
+                    b.HasKey("CorrelationId");
+
+                    b.ToTable("registration_state", "sample");
                 });
 #pragma warning restore 612, 618
         }

@@ -121,6 +121,7 @@ namespace Sample.Api.Migrations
                     outbox_id = table.Column<Guid>(type: "uuid", nullable: true),
                     message_id = table.Column<Guid>(type: "uuid", nullable: false),
                     content_type = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    message_type = table.Column<string>(type: "text", nullable: false),
                     body = table.Column<string>(type: "text", nullable: false),
                     conversation_id = table.Column<Guid>(type: "uuid", nullable: true),
                     correlation_id = table.Column<Guid>(type: "uuid", nullable: true),
@@ -152,6 +153,30 @@ namespace Sample.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_outbox_state", x => x.outbox_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "registration_state",
+                schema: "sample",
+                columns: table => new
+                {
+                    correlation_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    participant_email_address = table.Column<string>(type: "text", nullable: true),
+                    participant_license_number = table.Column<string>(type: "text", nullable: true),
+                    participant_category = table.Column<string>(type: "text", nullable: true),
+                    participant_license_expiration_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    registration_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    card_number = table.Column<string>(type: "text", nullable: true),
+                    event_id = table.Column<string>(type: "text", nullable: true),
+                    race_id = table.Column<string>(type: "text", nullable: true),
+                    current_state = table.Column<string>(type: "text", nullable: true),
+                    reason = table.Column<string>(type: "text", nullable: true),
+                    retry_attempt = table.Column<int>(type: "integer", nullable: true),
+                    schedule_retry_token = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_registration_state", x => x.correlation_id);
                 });
 
             migrationBuilder.CreateIndex(
@@ -225,6 +250,10 @@ namespace Sample.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "outbox_state",
+                schema: "sample");
+
+            migrationBuilder.DropTable(
+                name: "registration_state",
                 schema: "sample");
         }
     }

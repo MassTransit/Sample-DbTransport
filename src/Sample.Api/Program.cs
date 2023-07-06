@@ -1,5 +1,7 @@
 using System.Reflection;
 using MassTransit;
+using MassTransit.DependencyInjection;
+using MassTransit.Internals;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -36,14 +38,21 @@ builder.Services.AddDbContext<SampleDbContext>(x =>
 });
 builder.Services.AddHostedService<MigrationHostedService<SampleDbContext>>();
 
+
+builder.Services.AddSingleton<IEndpointAddressProvider, DbEndpointAddressProvider>();
+
 builder.Services.ConfigurePgSqlTransport(connectionString);
 builder.Services.AddMassTransit(x =>
 {
+    x.SetEntityFrameworkSagaRepositoryProvider(r =>
+    {
+        r.ExistingDbContext<SampleDbContext>();
+        r.UsePostgres();
+    });
+    
     x.AddSagaRepository<JobSaga>()
         .EntityFrameworkRepository(r =>
         {
-            r.ConcurrencyMode = ConcurrencyMode.Pessimistic;
-
             r.ExistingDbContext<SampleDbContext>();
             r.UsePostgres();
         });
@@ -62,20 +71,37 @@ builder.Services.AddMassTransit(x =>
 
     x.SetKebabCaseEndpointNameFormatter();
 
-    // The database transport has built-in scheduling support
-    x.AddDelayedMessageScheduler();
-
     x.AddEntityFrameworkOutbox<SampleDbContext>(o =>
     {
         o.UsePostgres();
     });
 
+    x.AddConfigureEndpointsCallback((context, _, cfg) =>
+    {
+        cfg.UseDelayedRedelivery(r =>
+        {
+            r.Handle<LongTransientException>();
+            r.Interval(3000, 5000);
+        });
+
+        cfg.UseMessageRetry(r =>
+        {
+            r.Handle<TransientException>();
+            r.Interval(25, 50);
+        });
+
+//        cfg.UseEntityFrameworkOutbox<SampleDbContext>(context);
+    });
+
+    x.AddConsumersFromNamespaceContaining<ComponentsNamespace>();
+    x.AddActivitiesFromNamespaceContaining<ComponentsNamespace>();
+    x.AddSagaStateMachinesFromNamespaceContaining<ComponentsNamespace>();
+
     x.UsingDb((context, cfg) =>
     {
         cfg.UsePgSql(context);
 
-        // The database transport has built-in scheduling support
-        cfg.UseDelayedMessageScheduler();
+        cfg.UseDbMessageScheduler();
 
         cfg.ConfigureEndpoints(context);
     });
@@ -104,6 +130,10 @@ builder.Services.AddOpenApiDocument(cfg => cfg.PostProcess = d =>
         Email = "support@masstransit.io"
     };
 });
+
+List<ServiceDescriptor> matches = builder.Services.Where(x => x.ServiceType.ClosesType(typeof(IExecuteActivityScopeProvider<,>))).ToList();
+matches.ForEach(x => builder.Services.Remove(x));
+
 
 
 var app = builder.Build();

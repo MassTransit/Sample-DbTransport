@@ -4,6 +4,7 @@ using MassTransit;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using StateMachines;
 
 
 public class SampleDbContext :
@@ -21,6 +22,7 @@ public class SampleDbContext :
             yield return new JobTypeSagaMap(false);
             yield return new JobSagaMap(false);
             yield return new JobAttemptSagaMap(false);
+            yield return new RegistrationStateInstanceMap();
         }
     }
 

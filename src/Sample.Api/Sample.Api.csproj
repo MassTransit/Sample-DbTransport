@@ -24,4 +24,8 @@
         <ProjectReference Include="..\Sample.Components\Sample.Components.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\" />
+    </ItemGroup>
+
 </Project>

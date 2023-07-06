@@ -33,7 +33,8 @@ public class MigrationHostedService<TDbContext> :
         await _context.Database.MigrateAsync(cancellationToken);
     }
 
-    public async Task StopAsync(CancellationToken cancellationToken)
+    public Task StopAsync(CancellationToken cancellationToken)
     {
+        return Task.CompletedTask;
     }
 }
