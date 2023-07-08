@@ -90,7 +90,7 @@ builder.Services.AddMassTransit(x =>
             r.Interval(25, 50);
         });
 
-//        cfg.UseEntityFrameworkOutbox<SampleDbContext>(context);
+        cfg.UseEntityFrameworkOutbox<SampleDbContext>(context);
     });
 
     x.AddConsumersFromNamespaceContaining<ComponentsNamespace>();
@@ -102,6 +102,8 @@ builder.Services.AddMassTransit(x =>
         cfg.UsePgSql(context);
 
         cfg.UseDbMessageScheduler();
+        
+        cfg.AutoStart = true;
 
         cfg.ConfigureEndpoints(context);
     });
@@ -130,11 +132,6 @@ builder.Services.AddOpenApiDocument(cfg => cfg.PostProcess = d =>
         Email = "support@masstransit.io"
     };
 });
-
-List<ServiceDescriptor> matches = builder.Services.Where(x => x.ServiceType.ClosesType(typeof(IExecuteActivityScopeProvider<,>))).ToList();
-matches.ForEach(x => builder.Services.Remove(x));
-
-
 
 var app = builder.Build();
 
