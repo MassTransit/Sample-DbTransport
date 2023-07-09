@@ -10,6 +10,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Components", "src\Sample.Components\Sample.Components.csproj", "{69C263F3-57E4-45B3-A264-940F22282E91}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{88C4B3F9-86C6-469D-9DF8-971A284DDC8F}"
+	ProjectSection(SolutionItems) = preProject
+		tests\SampleRequests.http = tests\SampleRequests.http
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Tests", "tests\Sample.Tests\Sample.Tests.csproj", "{ACD4A11E-58A1-47D9-8D01-E125313E5424}"
 EndProject

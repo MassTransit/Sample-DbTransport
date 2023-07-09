@@ -1,0 +1,18 @@
+### Create Registration
+POST http://localhost:5010/Registration
+Content-Type: application/json
+
+{
+  "submissionId": "{{$random.uuid}}",
+  "participantEmailAddress": "test@hello.com",
+  "participantLicenseNumber": "LIC123",
+  "participantCategory": "Road",
+  "cardNumber": "4444-4444-4444-4444",
+  "eventId": "E-123",
+  "raceId": "R-456"
+}
+
+> {% client.global.set("submissionId", response.body.json.submissionId); %}
+
+### Get Registration
+GET http://localhost:5010/Registration/{{submissionId}}

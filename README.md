@@ -20,5 +20,4 @@ The customer will also be issued a license file that will activate the transport
 2. Run `docker compose up --build` to start pgsql.
 3. Open the solution.
 4. Build it (the NuGet packages should restore)
-5. Navigate to `http://localhost:5010/swagger` to interact with the API.
-
+5. Navigate to [`http://localhost:5010/swagger`](http://localhost:5010/swagger) to interact with the API.

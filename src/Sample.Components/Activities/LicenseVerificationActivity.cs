@@ -27,7 +27,7 @@ public class LicenseVerificationActivity :
         if (licenseNumber == "8675309")
             throw new RoutingSlipException($"The license number is invalid: {licenseNumber}");
 
-        DateTime? expirationDate = DateTime.Today + TimeSpan.FromDays(90);
+        DateTime? expirationDate = DateTime.UtcNow.Date + TimeSpan.FromDays(90);
 
         return context.CompletedWithVariables(new { ParticipantLicenseExpirationDate = expirationDate });
     }
