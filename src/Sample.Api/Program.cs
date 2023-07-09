@@ -1,7 +1,5 @@
 using System.Reflection;
 using MassTransit;
-using MassTransit.DependencyInjection;
-using MassTransit.Internals;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -126,7 +124,7 @@ builder.Services.AddOpenApiDocument(cfg => cfg.PostProcess = d =>
     d.Info.Title = "MassTransit Database Transport Sample";
     d.Info.Contact = new OpenApiContact
     {
-        Name = "Chris Patterson",
+        Name = "MassTransit Support",
         Email = "support@masstransit.io"
     };
 });

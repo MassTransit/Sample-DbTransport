@@ -8,17 +8,8 @@
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5010",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "https": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5010;https://localhost:5011",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "MT_LICENSE_PATH": "./mt.lic"
       }
     }
   }
