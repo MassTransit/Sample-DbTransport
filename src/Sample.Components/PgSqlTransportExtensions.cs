@@ -15,7 +15,7 @@ public static class PgSqlTransportExtensions
     /// <param name="create"></param>
     /// <param name="delete"></param>
     /// <returns></returns>
-    public static IServiceCollection ConfigurePgSqlTransport(this IServiceCollection services, string? connectionString, bool create = true,
+    public static IServiceCollection ConfigurePostgresTransport(this IServiceCollection services, string? connectionString, bool create = true,
         bool delete = false)
     {
         var builder = new NpgsqlConnectionStringBuilder(connectionString);
@@ -32,7 +32,7 @@ public static class PgSqlTransportExtensions
             options.AdminPassword = builder.Password;
         });
 
-        services.AddPgSqlMigrationHostedService(create, delete);
+        services.AddPostgresMigrationHostedService(create, delete);
 
         return services;
     }

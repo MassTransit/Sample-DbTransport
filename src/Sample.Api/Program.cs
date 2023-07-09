@@ -41,7 +41,7 @@ builder.Services.AddHostedService<MigrationHostedService<SampleDbContext>>();
 
 builder.Services.AddSingleton<IEndpointAddressProvider, DbEndpointAddressProvider>();
 
-builder.Services.ConfigurePgSqlTransport(connectionString);
+builder.Services.ConfigurePostgresTransport(connectionString);
 builder.Services.AddMassTransit(x =>
 {
     x.SetEntityFrameworkSagaRepositoryProvider(r =>
@@ -49,7 +49,7 @@ builder.Services.AddMassTransit(x =>
         r.ExistingDbContext<SampleDbContext>();
         r.UsePostgres();
     });
-    
+
     x.AddSagaRepository<JobSaga>()
         .EntityFrameworkRepository(r =>
         {
@@ -81,7 +81,7 @@ builder.Services.AddMassTransit(x =>
         cfg.UseDelayedRedelivery(r =>
         {
             r.Handle<LongTransientException>();
-            r.Interval(3000, 5000);
+            r.Interval(10000, 15000);
         });
 
         cfg.UseMessageRetry(r =>
@@ -97,12 +97,10 @@ builder.Services.AddMassTransit(x =>
     x.AddActivitiesFromNamespaceContaining<ComponentsNamespace>();
     x.AddSagaStateMachinesFromNamespaceContaining<ComponentsNamespace>();
 
-    x.UsingDb((context, cfg) =>
+    x.UsingPostgres((context, cfg) =>
     {
-        cfg.UsePgSql(context);
-
         cfg.UseDbMessageScheduler();
-        
+
         cfg.AutoStart = true;
 
         cfg.ConfigureEndpoints(context);
