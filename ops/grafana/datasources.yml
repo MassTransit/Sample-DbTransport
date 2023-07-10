@@ -1,0 +1,22 @@
+# config file version
+apiVersion: 1
+
+# list of data sources that should be deleted from the database
+deleteDatasources:
+  - name: postgres
+    orgId: 1
+
+# list of data sources to insert/update depending
+# what's available in the database
+datasources:
+  - name: postgres
+    type: postgres
+    url: postgres:5432
+    user: postgres
+    secureJsonData:
+      password: 'Password12!'
+    isDefault: true
+    jsonData:
+      database: sample
+      sslmode: 'disable'
+      postgresVersion: 1000
