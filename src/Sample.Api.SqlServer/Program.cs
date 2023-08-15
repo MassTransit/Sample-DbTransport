@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NSwag;
-using Sample.Api;
+using Sample.Api.SqlServer;
 using Sample.Components;
 using Serilog;
 using Serilog.Events;
@@ -29,7 +29,7 @@ var connectionString = builder.Configuration.GetConnectionString("Db");
 
 builder.Services.AddDbContext<SampleDbContext>(x =>
 {
-    x.UseNpgsql(connectionString, options =>
+    x.UseSqlServer(connectionString, options =>
     {
         options.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
         options.MigrationsHistoryTable("ef_migration_history");
@@ -40,39 +40,39 @@ builder.Services.AddHostedService<MigrationHostedService<SampleDbContext>>();
 
 builder.Services.AddSingleton<IEndpointAddressProvider, DbEndpointAddressProvider>();
 
-builder.Services.ConfigurePostgresTransport(connectionString);
+builder.Services.ConfigureSqlServerTransport(connectionString);
 builder.Services.AddMassTransit(x =>
 {
     x.SetEntityFrameworkSagaRepositoryProvider(r =>
     {
         r.ExistingDbContext<SampleDbContext>();
-        r.UsePostgres();
+        r.UseSqlServer();
     });
 
     x.AddSagaRepository<JobSaga>()
         .EntityFrameworkRepository(r =>
         {
             r.ExistingDbContext<SampleDbContext>();
-            r.UsePostgres();
+            r.UseSqlServer();
         });
     x.AddSagaRepository<JobTypeSaga>()
         .EntityFrameworkRepository(r =>
         {
             r.ExistingDbContext<SampleDbContext>();
-            r.UsePostgres();
+            r.UseSqlServer();
         });
     x.AddSagaRepository<JobAttemptSaga>()
         .EntityFrameworkRepository(r =>
         {
             r.ExistingDbContext<SampleDbContext>();
-            r.UsePostgres();
+            r.UseSqlServer();
         });
 
     x.SetKebabCaseEndpointNameFormatter();
 
     x.AddEntityFrameworkOutbox<SampleDbContext>(o =>
     {
-        o.UsePostgres();
+        o.UseSqlServer();
     });
 
     x.AddConfigureEndpointsCallback((context, _, cfg) =>
@@ -96,7 +96,7 @@ builder.Services.AddMassTransit(x =>
     x.AddActivitiesFromNamespaceContaining<ComponentsNamespace>();
     x.AddSagaStateMachinesFromNamespaceContaining<ComponentsNamespace>();
 
-    x.UsingPostgres((context, cfg) =>
+    x.UsingSqlServer((context, cfg) =>
     {
         cfg.UseDbMessageScheduler();
 

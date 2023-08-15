@@ -1,5 +1,14 @@
 ﻿version: "3.9"
 services:
+  mssql:
+    image: "mcr.microsoft.com/azure-sql-edge"
+    networks:
+      - sample-network
+    environment:
+      - "ACCEPT_EULA=Y"
+      - "SA_PASSWORD=Password12!"
+    ports:
+      - "1433:1433"
   postgres:
     image: "postgres:14.7"
     networks:
