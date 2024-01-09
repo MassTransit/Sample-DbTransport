@@ -19,7 +19,7 @@ public static class PgSqlTransportExtensions
     {
         var builder = new NpgsqlConnectionStringBuilder(connectionString);
 
-        services.AddOptions<DbTransportOptions>().Configure(options =>
+        services.AddOptions<SqlTransportOptions>().Configure(options =>
         {
             options.Host = builder.Host ?? "localhost";
             options.Database = builder.Database ?? "sample";

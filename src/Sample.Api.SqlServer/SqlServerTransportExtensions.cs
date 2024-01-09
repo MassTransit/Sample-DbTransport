@@ -19,7 +19,7 @@ public static class SqlServerTransportExtensions
     {
         SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
 
-        services.AddOptions<DbTransportOptions>().Configure(options =>
+        services.AddOptions<SqlTransportOptions>().Configure(options =>
         {
             options.Host = "localhost";
             options.Database = builder.InitialCatalog ?? "sample";

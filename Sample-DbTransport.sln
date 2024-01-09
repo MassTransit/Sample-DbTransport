@@ -19,7 +19,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{A0044F73-9996-46C7-B199-B534797951F8}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
-		NuGet.Config = NuGet.Config
 		README.md = README.md
 	EndProjectSection
 EndProject
