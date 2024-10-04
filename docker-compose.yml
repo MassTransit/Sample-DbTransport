@@ -1,5 +1,4 @@
-﻿version: "3.9"
-services:
+﻿services:
   mssql:
     image: "mcr.microsoft.com/azure-sql-edge"
     networks:

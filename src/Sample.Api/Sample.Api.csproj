@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MassTransit.SqlTransport.PostgreSQL" Version="8.2.0-develop.1702" />
+        <PackageReference Include="MassTransit.SqlTransport.PostgreSQL" Version="8.2.6-develop.2031" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
             <PrivateAssets>all</PrivateAssets>

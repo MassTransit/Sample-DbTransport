@@ -2,26 +2,29 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Sample.Components;
 
 #nullable disable
 
-namespace Sample.Api.Migrations
+namespace Sample.Api.SqlServer.Migrations
 {
     [DbContext(typeof(SampleDbContext))]
-    partial class SampleDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241004184901_Updated")]
+    partial class Updated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("sample")
                 .HasAnnotation("ProductVersion", "8.0.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.InboxState", b =>
                 {
@@ -30,22 +33,22 @@ namespace Sample.Api.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime?>("Consumed")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("consumed");
 
                     b.Property<Guid>("ConsumerId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("consumer_id");
 
                     b.Property<DateTime?>("Delivered")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("delivered");
 
                     b.Property<DateTime?>("ExpirationTime")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("expiration_time");
 
                     b.Property<long?>("LastSequenceNumber")
@@ -53,25 +56,25 @@ namespace Sample.Api.Migrations
                         .HasColumnName("last_sequence_number");
 
                     b.Property<Guid>("LockId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("lock_id");
 
                     b.Property<Guid>("MessageId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("message_id");
 
                     b.Property<int>("ReceiveCount")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("receive_count");
 
                     b.Property<DateTime>("Received")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("received");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
+                        .HasColumnType("rowversion")
                         .HasColumnName("row_version");
 
                     b.HasKey("Id");
@@ -88,94 +91,94 @@ namespace Sample.Api.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("sequence_number");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("SequenceNumber"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("SequenceNumber"));
 
                     b.Property<string>("Body")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("body");
 
                     b.Property<string>("ContentType")
                         .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("nvarchar(256)")
                         .HasColumnName("content_type");
 
                     b.Property<Guid?>("ConversationId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("conversation_id");
 
                     b.Property<Guid?>("CorrelationId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("correlation_id");
 
                     b.Property<string>("DestinationAddress")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("nvarchar(256)")
                         .HasColumnName("destination_address");
 
                     b.Property<DateTime?>("EnqueueTime")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("enqueue_time");
 
                     b.Property<DateTime?>("ExpirationTime")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("expiration_time");
 
                     b.Property<string>("FaultAddress")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("nvarchar(256)")
                         .HasColumnName("fault_address");
 
                     b.Property<string>("Headers")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("headers");
 
                     b.Property<Guid?>("InboxConsumerId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("inbox_consumer_id");
 
                     b.Property<Guid?>("InboxMessageId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("inbox_message_id");
 
                     b.Property<Guid?>("InitiatorId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("initiator_id");
 
                     b.Property<Guid>("MessageId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("message_id");
 
                     b.Property<string>("MessageType")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("message_type");
 
                     b.Property<Guid?>("OutboxId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("outbox_id");
 
                     b.Property<string>("Properties")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("properties");
 
                     b.Property<Guid?>("RequestId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("request_id");
 
                     b.Property<string>("ResponseAddress")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("nvarchar(256)")
                         .HasColumnName("response_address");
 
                     b.Property<DateTime>("SentTime")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("sent_time");
 
                     b.Property<string>("SourceAddress")
                         .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("nvarchar(256)")
                         .HasColumnName("source_address");
 
                     b.HasKey("SequenceNumber");
@@ -185,10 +188,12 @@ namespace Sample.Api.Migrations
                     b.HasIndex("ExpirationTime");
 
                     b.HasIndex("OutboxId", "SequenceNumber")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[outbox_id] IS NOT NULL");
 
                     b.HasIndex("InboxMessageId", "InboxConsumerId", "SequenceNumber")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[inbox_message_id] IS NOT NULL AND [inbox_consumer_id] IS NOT NULL");
 
                     b.ToTable("outbox_message", "sample");
                 });
@@ -197,15 +202,15 @@ namespace Sample.Api.Migrations
                 {
                     b.Property<Guid>("OutboxId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("outbox_id");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("created");
 
                     b.Property<DateTime?>("Delivered")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("delivered");
 
                     b.Property<long?>("LastSequenceNumber")
@@ -213,13 +218,13 @@ namespace Sample.Api.Migrations
                         .HasColumnName("last_sequence_number");
 
                     b.Property<Guid>("LockId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("lock_id");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
+                        .HasColumnType("rowversion")
                         .HasColumnName("row_version");
 
                     b.HasKey("OutboxId");
@@ -232,39 +237,39 @@ namespace Sample.Api.Migrations
             modelBuilder.Entity("MassTransit.JobAttemptSaga", b =>
                 {
                     b.Property<Guid>("CorrelationId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("correlation_id");
 
                     b.Property<int>("CurrentState")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("current_state");
 
                     b.Property<DateTime?>("Faulted")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("faulted");
 
                     b.Property<string>("InstanceAddress")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("instance_address");
 
                     b.Property<Guid>("JobId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("job_id");
 
                     b.Property<int>("RetryAttempt")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("retry_attempt");
 
                     b.Property<string>("ServiceAddress")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("service_address");
 
                     b.Property<DateTime?>("Started")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("started");
 
                     b.Property<Guid?>("StatusCheckTokenId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("status_check_token_id");
 
                     b.HasKey("CorrelationId");
@@ -278,63 +283,63 @@ namespace Sample.Api.Migrations
             modelBuilder.Entity("MassTransit.JobSaga", b =>
                 {
                     b.Property<Guid>("CorrelationId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("correlation_id");
 
                     b.Property<Guid>("AttemptId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("attempt_id");
 
                     b.Property<DateTime?>("Completed")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("completed");
 
                     b.Property<string>("CronExpression")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("cron_expression");
 
                     b.Property<int>("CurrentState")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("current_state");
 
                     b.Property<TimeSpan?>("Duration")
-                        .HasColumnType("interval")
+                        .HasColumnType("time")
                         .HasColumnName("duration");
 
                     b.Property<DateTimeOffset?>("EndDate")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetimeoffset")
                         .HasColumnName("end_date");
 
                     b.Property<DateTime?>("Faulted")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("faulted");
 
                     b.Property<string>("IncompleteAttempts")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("incomplete_attempts");
 
                     b.Property<string>("Job")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("job");
 
                     b.Property<Guid?>("JobRetryDelayToken")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("job_retry_delay_token");
 
                     b.Property<Guid?>("JobSlotWaitToken")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("job_slot_wait_token");
 
                     b.Property<string>("JobState")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("job_state");
 
                     b.Property<TimeSpan?>("JobTimeout")
-                        .HasColumnType("interval")
+                        .HasColumnType("time")
                         .HasColumnName("job_timeout");
 
                     b.Property<Guid>("JobTypeId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("job_type_id");
 
                     b.Property<long?>("LastProgressLimit")
@@ -350,35 +355,35 @@ namespace Sample.Api.Migrations
                         .HasColumnName("last_progress_value");
 
                     b.Property<DateTimeOffset?>("NextStartDate")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetimeoffset")
                         .HasColumnName("next_start_date");
 
                     b.Property<string>("Reason")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("reason");
 
                     b.Property<int>("RetryAttempt")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("retry_attempt");
 
                     b.Property<string>("ServiceAddress")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("service_address");
 
                     b.Property<DateTimeOffset?>("StartDate")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetimeoffset")
                         .HasColumnName("start_date");
 
                     b.Property<DateTime?>("Started")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("started");
 
                     b.Property<DateTime?>("Submitted")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("submitted");
 
                     b.Property<string>("TimeZoneId")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("time_zone_id");
 
                     b.HasKey("CorrelationId");
@@ -389,47 +394,47 @@ namespace Sample.Api.Migrations
             modelBuilder.Entity("MassTransit.JobTypeSaga", b =>
                 {
                     b.Property<Guid>("CorrelationId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("correlation_id");
 
                     b.Property<int>("ActiveJobCount")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("active_job_count");
 
                     b.Property<string>("ActiveJobs")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("active_jobs");
 
                     b.Property<int>("ConcurrentJobLimit")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("concurrent_job_limit");
 
                     b.Property<int>("CurrentState")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("current_state");
 
                     b.Property<int?>("GlobalConcurrentJobLimit")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("global_concurrent_job_limit");
 
                     b.Property<string>("Instances")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("instances");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("name");
 
                     b.Property<int?>("OverrideJobLimit")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("override_job_limit");
 
                     b.Property<DateTime?>("OverrideLimitExpiration")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("override_limit_expiration");
 
                     b.Property<string>("Properties")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("properties");
 
                     b.HasKey("CorrelationId");
@@ -440,55 +445,55 @@ namespace Sample.Api.Migrations
             modelBuilder.Entity("Sample.Components.StateMachines.RegistrationState", b =>
                 {
                     b.Property<Guid>("CorrelationId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("correlation_id");
 
                     b.Property<string>("CardNumber")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("card_number");
 
                     b.Property<string>("CurrentState")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("current_state");
 
                     b.Property<string>("EventId")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("event_id");
 
                     b.Property<string>("ParticipantCategory")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("participant_category");
 
                     b.Property<string>("ParticipantEmailAddress")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("participant_email_address");
 
                     b.Property<DateTime?>("ParticipantLicenseExpirationDate")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("datetime2")
                         .HasColumnName("participant_license_expiration_date");
 
                     b.Property<string>("ParticipantLicenseNumber")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("participant_license_number");
 
                     b.Property<string>("RaceId")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("race_id");
 
                     b.Property<string>("Reason")
-                        .HasColumnType("text")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("reason");
 
                     b.Property<Guid?>("RegistrationId")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("registration_id");
 
                     b.Property<int?>("RetryAttempt")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("retry_attempt");
 
                     b.Property<Guid?>("ScheduleRetryToken")
-                        .HasColumnType("uuid")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("schedule_retry_token");
 
                     b.HasKey("CorrelationId");

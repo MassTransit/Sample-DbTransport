@@ -43,29 +43,19 @@ builder.Services.AddSingleton<IEndpointAddressProvider, DbEndpointAddressProvide
 builder.Services.ConfigureSqlServerTransport(connectionString);
 builder.Services.AddMassTransit(x =>
 {
+    x.AddSqlMessageScheduler();
+
     x.SetEntityFrameworkSagaRepositoryProvider(r =>
     {
         r.ExistingDbContext<SampleDbContext>();
         r.UseSqlServer();
     });
 
-    x.AddSagaRepository<JobSaga>()
+    x.AddJobSagaStateMachines()
         .EntityFrameworkRepository(r =>
         {
             r.ExistingDbContext<SampleDbContext>();
-            r.UseSqlServer();
-        });
-    x.AddSagaRepository<JobTypeSaga>()
-        .EntityFrameworkRepository(r =>
-        {
-            r.ExistingDbContext<SampleDbContext>();
-            r.UseSqlServer();
-        });
-    x.AddSagaRepository<JobAttemptSaga>()
-        .EntityFrameworkRepository(r =>
-        {
-            r.ExistingDbContext<SampleDbContext>();
-            r.UseSqlServer();
+            r.UsePostgres();
         });
 
     x.SetKebabCaseEndpointNameFormatter();
@@ -89,6 +79,9 @@ builder.Services.AddMassTransit(x =>
             r.Interval(25, 50);
         });
 
+        if (cfg is ISqlReceiveEndpointConfigurator sql)
+            sql.SetReceiveMode(SqlReceiveMode.Partitioned);
+
         cfg.UseEntityFrameworkOutbox<SampleDbContext>(context);
     });
 
@@ -98,7 +91,10 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingSqlServer((context, cfg) =>
     {
-        cfg.UseDbMessageScheduler();
+        cfg.UseSqlMessageScheduler();
+
+        cfg.UseJobSagaPartitionKeyFormatters();
+        cfg.ConfigurePartitionKeyFormatters();
 
         cfg.AutoStart = true;
 

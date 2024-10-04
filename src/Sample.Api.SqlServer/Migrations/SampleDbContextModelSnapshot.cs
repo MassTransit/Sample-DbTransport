@@ -18,7 +18,7 @@ namespace Sample.Api.SqlServer.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("sample")
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -75,8 +75,6 @@ namespace Sample.Api.SqlServer.Migrations
                         .HasColumnName("row_version");
 
                     b.HasKey("Id");
-
-                    b.HasAlternateKey("MessageId", "ConsumerId");
 
                     b.HasIndex("Delivered");
 
@@ -293,6 +291,10 @@ namespace Sample.Api.SqlServer.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("completed");
 
+                    b.Property<string>("CronExpression")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("cron_expression");
+
                     b.Property<int>("CurrentState")
                         .HasColumnType("int")
                         .HasColumnName("current_state");
@@ -301,9 +303,17 @@ namespace Sample.Api.SqlServer.Migrations
                         .HasColumnType("time")
                         .HasColumnName("duration");
 
+                    b.Property<DateTimeOffset?>("EndDate")
+                        .HasColumnType("datetimeoffset")
+                        .HasColumnName("end_date");
+
                     b.Property<DateTime?>("Faulted")
                         .HasColumnType("datetime2")
                         .HasColumnName("faulted");
+
+                    b.Property<string>("IncompleteAttempts")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("incomplete_attempts");
 
                     b.Property<string>("Job")
                         .HasColumnType("nvarchar(max)")
@@ -317,6 +327,10 @@ namespace Sample.Api.SqlServer.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("job_slot_wait_token");
 
+                    b.Property<string>("JobState")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("job_state");
+
                     b.Property<TimeSpan?>("JobTimeout")
                         .HasColumnType("time")
                         .HasColumnName("job_timeout");
@@ -324,6 +338,22 @@ namespace Sample.Api.SqlServer.Migrations
                     b.Property<Guid>("JobTypeId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("job_type_id");
+
+                    b.Property<long?>("LastProgressLimit")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_progress_limit");
+
+                    b.Property<long?>("LastProgressSequenceNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_progress_sequence_number");
+
+                    b.Property<long?>("LastProgressValue")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_progress_value");
+
+                    b.Property<DateTimeOffset?>("NextStartDate")
+                        .HasColumnType("datetimeoffset")
+                        .HasColumnName("next_start_date");
 
                     b.Property<string>("Reason")
                         .HasColumnType("nvarchar(max)")
@@ -337,6 +367,10 @@ namespace Sample.Api.SqlServer.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("service_address");
 
+                    b.Property<DateTimeOffset?>("StartDate")
+                        .HasColumnType("datetimeoffset")
+                        .HasColumnName("start_date");
+
                     b.Property<DateTime?>("Started")
                         .HasColumnType("datetime2")
                         .HasColumnName("started");
@@ -344,6 +378,10 @@ namespace Sample.Api.SqlServer.Migrations
                     b.Property<DateTime?>("Submitted")
                         .HasColumnType("datetime2")
                         .HasColumnName("submitted");
+
+                    b.Property<string>("TimeZoneId")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("time_zone_id");
 
                     b.HasKey("CorrelationId");
 
@@ -372,6 +410,10 @@ namespace Sample.Api.SqlServer.Migrations
                         .HasColumnType("int")
                         .HasColumnName("current_state");
 
+                    b.Property<int?>("GlobalConcurrentJobLimit")
+                        .HasColumnType("int")
+                        .HasColumnName("global_concurrent_job_limit");
+
                     b.Property<string>("Instances")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("instances");
@@ -387,6 +429,10 @@ namespace Sample.Api.SqlServer.Migrations
                     b.Property<DateTime?>("OverrideLimitExpiration")
                         .HasColumnType("datetime2")
                         .HasColumnName("override_limit_expiration");
+
+                    b.Property<string>("Properties")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("properties");
 
                     b.HasKey("CorrelationId");
 
@@ -450,6 +496,27 @@ namespace Sample.Api.SqlServer.Migrations
                     b.HasKey("CorrelationId");
 
                     b.ToTable("registration_state", "sample");
+                });
+
+            modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxMessage", b =>
+                {
+                    b.HasOne("MassTransit.EntityFrameworkCoreIntegration.OutboxState", null)
+                        .WithMany()
+                        .HasForeignKey("OutboxId");
+
+                    b.HasOne("MassTransit.EntityFrameworkCoreIntegration.InboxState", null)
+                        .WithMany()
+                        .HasForeignKey("InboxMessageId", "InboxConsumerId")
+                        .HasPrincipalKey("MessageId", "ConsumerId");
+                });
+
+            modelBuilder.Entity("MassTransit.JobAttemptSaga", b =>
+                {
+                    b.HasOne("MassTransit.JobSaga", null)
+                        .WithMany()
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
