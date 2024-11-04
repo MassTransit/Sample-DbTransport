@@ -7,7 +7,7 @@ using Microsoft.Data.SqlClient;
 public static class SqlServerTransportExtensions
 {
     /// <summary>
-    /// Works some shenanigans to get all the host options configured for the Postgresql transport
+    /// Works some shenanigans to get all the host options configured for the SqlServer transport
     /// </summary>
     /// <param name="services"></param>
     /// <param name="connectionString"></param>
