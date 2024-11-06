@@ -23,7 +23,17 @@
       interval: 5s
       timeout: 10s
       retries: 10
-
+  grafana:
+    image: grafana/grafana:10.0.1
+    ports:
+      - "3000:3000"
+    networks:
+      - "sample-network"
+    volumes:
+      - ./ops/grafana/datasources.yml:/etc/grafana/provisioning/datasources/postgres.yaml
+      - ./ops/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/masstransit.yaml
+      - ./ops/grafana/dashboards:/dashboards
+      - ./ops/grafana/grafana.ini:/etc/grafana/grafana.ini
 networks:
   sample-network:
     driver: bridge
