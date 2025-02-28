@@ -2,6 +2,7 @@ using System.Reflection;
 using MassTransit;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NSwag;
 using Sample.Api;
@@ -29,6 +30,8 @@ var connectionString = builder.Configuration.GetConnectionString("Db");
 
 builder.Services.AddDbContext<SampleDbContext>(x =>
 {
+    x.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
+
     x.UseNpgsql(connectionString, options =>
     {
         options.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
